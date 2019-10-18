@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Hemp Conduit Good Handler
+
+Resources:
+  hcGoodHandler:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: go1.x
+      Handler: handler
+      CodeUri: .
+      Timeout: 30
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: hemp_conduit_good
+      Environment:
+        Variables:
+          TOKE: aa2237
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-0b5ae3a5e20b842bf
+        SubnetIds:
+          - subnet-49510d3f
+          - subnet-54056e0c
+
+Outputs:
+  hcGoodHandler:
+    Description: "Lambda ARN"
+    Value: !GetAtt HelloWorldFunction.Arn
