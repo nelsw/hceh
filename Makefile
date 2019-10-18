@@ -1,7 +1,3 @@
-# https://docs.aws.amazon.com/cli/latest/reference/lambda/index.html
-# https://stedolan.github.io/jq/
-# https://mikefarah.github.io/yq/
-
 .PHONY: bld pkg run it create update
 
 FN=
