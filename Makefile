@@ -1,6 +1,6 @@
 # https://docs.aws.amazon.com/cli/latest/reference/lambda/index.html
 # https://stedolan.github.io/jq/
-#https://mikefarah.github.io/yq/
+# https://mikefarah.github.io/yq/
 
 .PHONY: bld pkg run it create update
 
@@ -9,7 +9,9 @@ ROLE=
 SGID=
 SNID1=
 SNID2=
-EVJ={ "wendell": "stamps" }
+EVJ={ "": "" }
+
+MJ=jq '. | {StatusCode: .statusCode, Headers: .headers, Body: .body|fromjson}'
 
 it: create
 
@@ -19,12 +21,9 @@ bld:
 pkg: bld
 	zip handler.zip handler
 
-yml:
-	yq w -i template.yml Resources.handler ${FN}
-
 run: bld
-	sam local invoke -e testdata/email-confirmation.json ${FN} | jq '. | {StatusCode: .statusCode, Headers: .headers, Body: .body|fromjson}';\
-	sam local invoke -e testdata/password-reset.json ${FN} | jq '. | {StatusCode: .statusCode, Headers: .headers, Body: .body|fromjson}'
+	sam local invoke -e testdata/email-confirmation.json ${FN} | ${MJ};\
+	sam local invoke -e testdata/password-reset.json ${FN} | ${MJ}
 
 update: pkg
 	aws lambda update-function-code --function-name ${FN} --zip-file fileb://./handler.zip;\
