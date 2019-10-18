@@ -23,7 +23,7 @@ type Email struct {
 	Template string `json:"template"`
 }
 
-var templates = template.Must(template.ParseFiles("email-confirmation.html", "password-reset.html"))
+var templates = template.Must(template.ParseFiles("template/email-confirmation.html", "template/password-reset.html"))
 var svc *ses.SES
 
 func init() {
