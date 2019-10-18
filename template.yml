@@ -2,6 +2,15 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: Hemp Conduit Good Handler
 
+
+Parameters:
+  SecurityGroupIds:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    Description: Security Group IDs that Lambda will use
+  VpcSubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: VPC Subnet IDs that Lambda will use (min 2 for HA)
+
 Resources:
   hcGoodHandler:
     Type: AWS::Lambda::Function
@@ -11,17 +20,15 @@ Resources:
       CodeUri: .
       Timeout: 30
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: hemp_conduit_good
+        - VPCAccessPolicy: {}
+        # This policy gives permission for Lambdas to create/manage ENIs
+        # SAM Policy templates you can use: https://github.com/awslabs/serverless-application-model/blob/develop/examples/2016-10-31/policy_templates/all_policy_templates.yaml
       Environment:
         Variables:
           TOKE: aa2237
       VpcConfig:
-        SecurityGroupIds:
-          - sg-0b5ae3a5e20b842bf
-        SubnetIds:
-          - subnet-49510d3f
-          - subnet-54056e0c
+        SecurityGroupIds: !Ref SecurityGroupIds
+        SubnetIds: !Ref VpcSubnetIds
 
 Outputs:
   hcGoodHandler:
